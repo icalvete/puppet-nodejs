@@ -1,0 +1,72 @@
+#!/bin/bash
+
+# chkconfig: 2345 95 20
+# description: <%= @npm_pkg -%> startup script
+
+# Must be a valid filename
+NAME=<%= @npm_pkg %>
+PIDFILE=/var/run/$NAME.pid
+#This is the command to be run, give the full pathname
+DAEMON=/usr/bin/node
+DAEMON_OPTS="<%= @npm_dir -%>/<%= @npm_pkg -%>/<%= @index -%>.js <%= @npm_dir -%>/<%= @npm_pkg -%>/Config.js"
+
+export PATH="${PATH:+$PATH:}/usr/sbin:/sbin"
+
+#Exit if the package is not installed
+if [ ! -x "$DAEMON" ]; then
+{
+  echo "Couldn't find $DAEMON"
+    exit 99
+}
+fi
+
+. /etc/init.d/functions
+
+do_start()
+{
+  ($DAEMON $DAEMON_OPTS &) \
+  && success || failure
+}
+
+do_stop()
+{
+  pid=`ps auxww | grep '<%= @npm_pkg -%>' | awk '{print $2}'`
+    if checkpid $pid 2>&1; then
+      kill -TERM $pid >/dev/null 2>&1
+      usleep 100000
+      if checkpid $pid && sleep 1 &&
+        checkpid $pid && sleep $delay &&
+        checkpid $pid ; then
+        kill -KILL $pid >/dev/null 2>&1
+        usleep 100000
+      fi
+    fi
+    checkpid $pid
+    RC=$?
+    [ "$RC" -eq 0 ] && failure $"$base shutdown" || success $"$base shutdown"
+}
+
+case "$1" in
+  start)
+    echo -n "Starting daemon: "$NAME
+    do_start
+    echo "."
+;;
+  stop)
+    echo -n "Stopping daemon: "$NAME
+    do_stop
+    echo "."
+;;
+  restart)
+    echo -n "Restarting daemon: "$NAME
+    do_start
+    do_stop
+    echo "."
+;;
+
+  *)
+echo "Usage: "$1" {start|stop|restart}"
+exit 1
+esac
+
+exit 0
