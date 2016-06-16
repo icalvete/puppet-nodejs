@@ -1,4 +1,8 @@
-class nodejs inherits nodejs::params {
+class nodejs (
+
+  $version = 5
+
+) inherits nodejs::params {
 
   anchor {'nodejs::begin':
     before => Class['nodejs::install']
