@@ -6,7 +6,7 @@ class nodejs::install {
     repos    => 'main',
     key      => {
       'id'     => '1655A0AB68576280',
-      'server' => 'subkeys.pgp.net',
+      'server' => 'keyserver.ubuntu.com',
     },
     include  => {
       'src'    => true,
