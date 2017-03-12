@@ -5,7 +5,7 @@ class nodejs::install {
     location => "${nodejs::params::repo_location}${nodejs::version}.x",
     repos    => 'main',
     key      => {
-      'id'     => '1655A0AB68576280',
+      'id'     => '9FD3B784BC1C6FC31A8A0A1C1655A0AB68576280',
       'server' => 'keyserver.ubuntu.com',
     },
     include  => {
