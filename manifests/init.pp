@@ -1,6 +1,6 @@
 class nodejs (
 
-  $version = 5
+  $version = 10
 
 ) inherits nodejs::params {
 
