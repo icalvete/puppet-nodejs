@@ -1,5 +1,10 @@
 class nodejs::install {
 
+  exec { 'install_node_gpg':
+    command  => '/usr/bin/wget -qO- https://deb.nodesource.com/gpgkey/nodesource.gpg.key | /usr/bin/apt-key add -',
+    provider => 'shell'
+  }
+
   apt::source { "nodejs_${nodejs::version}":
     comment  => 'This is the nodejs 5 mirror',
     location => "${nodejs::params::repo_location}${nodejs::version}.x",
@@ -12,6 +17,7 @@ class nodejs::install {
       'src'    => true,
       'deb'    => true,
     },
+    require  => Exec['install_node_gpg'],
     notify   => Exec['nodejs_source_list']
   }
 
